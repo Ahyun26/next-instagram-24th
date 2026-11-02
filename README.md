@@ -65,4 +65,4 @@
 - [Next.js 14에서 변한 것들](https://velog.io/@lee_1124/Next.js-14-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8)
 - [Next.js 15, 16](https://beam307.github.io/2026/03/18/nextjs16-vs15/)
 - [React & Next.js에서 발견된 취약점-(CVE-2025-55182(React2Shell)](https://news.hada.io/topic?id=24874)
-- [Next.js 이렇게 쓰면 느립니다] (https://velog.io/@k-svelte-master/nextjs-slow-1-dynamic-rsc-prefetch)
+- [Next.js 이렇게 쓰면 느립니다](https://velog.io/@k-svelte-master/nextjs-slow-1-dynamic-rsc-prefetch)
