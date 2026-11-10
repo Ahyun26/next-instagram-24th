@@ -1,7 +1,41 @@
-export default function ProfilePage() {
+import { notFound } from 'next/navigation';
+
+import PostGrid from '@/components/profile/PostGrid';
+import ProfileHeader from '@/components/profile/ProfileHeader';
+import ProfileHighlights from '@/components/profile/ProfileHighlights';
+import ProfileTabs from '@/components/profile/ProfileTabs';
+import { posts } from '@/data/posts';
+import { currentUserId, users } from '@/data/users';
+
+interface ProfilePageProps {
+  params: Promise<{ username: string }>;
+}
+
+export function generateStaticParams() {
+  return users.map((user) => ({ username: user.username }));
+}
+
+export default async function ProfilePage({ params }: ProfilePageProps) {
+  const { username } = await params;
+  const user = users.find((user) => user.username === username);
+
+  if (!user) {
+    notFound();
+  }
+
+  const userPosts = posts.filter((post) => post.authorId === user.id);
+  const isOwnProfile = user.id === currentUserId;
+
   return (
-    <div>
-      <h1 className="text-center text-3xl font-bold">프로필 페이지 입니다</h1>
+    <div className="box-content mx-auto w-[74%] max-w-[1457px] px-[20px] pt-[30px]">
+      <ProfileHeader
+        user={user}
+        postCount={userPosts.length}
+        isOwnProfile={isOwnProfile}
+      />
+      {isOwnProfile && <ProfileHighlights />}
+      <ProfileTabs isOwnProfile={isOwnProfile} />
+      <PostGrid posts={userPosts} username={user.username} />
     </div>
   );
 }
