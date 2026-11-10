@@ -28,6 +28,19 @@ export default function ProfileContent({
         selectedTab={selectedTab}
         onTabChange={setSelectedTab}
       />
+      {isOwnProfile && selectedTab === 'saved' && (
+        <div className="flex items-center justify-between gap-[16px] py-[24px]">
+          <p className="text-[12px] leading-[16px] text-[#8e8e8e]">
+            저장한 내용은 회원님만 볼 수 있습니다
+          </p>
+          <button
+            type="button"
+            className="shrink-0 cursor-pointer text-[14px] leading-[18px] font-semibold text-[#85a1ff]"
+          >
+            + 새 컬렉션
+          </button>
+        </div>
+      )}
       {visiblePosts.length > 0 ? (
         <PostGrid posts={visiblePosts} username={username} />
       ) : (
