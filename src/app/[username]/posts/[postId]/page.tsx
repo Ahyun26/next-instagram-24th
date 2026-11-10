@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import PostDetail from '@/components/post/PostDetail';
 import { posts } from '@/data/posts';
-import { users } from '@/data/users';
+import { currentUserId, users } from '@/data/users';
 
 interface PostPageProps {
   params: Promise<{ username: string; postId: string }>;
@@ -24,5 +24,13 @@ export default async function PostPage({ params }: PostPageProps) {
 
   if (!author || !post) notFound();
 
-  return <PostDetail post={post} author={author} users={users} />;
+  return (
+    <PostDetail
+      key={post.id}
+      post={post}
+      author={author}
+      users={users}
+      currentUserId={currentUserId}
+    />
+  );
 }

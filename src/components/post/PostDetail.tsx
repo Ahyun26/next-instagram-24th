@@ -3,9 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 
 import Avatar from '@/components/common/Avatar';
+import useSavedPosts from '@/hooks/useSavedPosts';
 import type { Post } from '@/types/post';
 import type { User } from '@/types/user';
 
@@ -13,10 +14,26 @@ interface PostDetailProps {
   post: Post;
   author: User;
   users: User[];
+  currentUserId: string;
 }
 
-export default function PostDetail({ post, author, users }: PostDetailProps) {
+export default function PostDetail({
+  post,
+  author,
+  users,
+  currentUserId,
+}: PostDetailProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { savedPostIds, toggleSavedPost, isLoaded } =
+    useSavedPosts(currentUserId);
+  const isSaved = savedPostIds.includes(post.id);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const commentListRef = useRef<HTMLDivElement>(null);
+  const [comments, setComments] = useState(post.comments);
+  const [commentText, setCommentText] = useState('');
+  const canSubmit =
+    commentText.trim().length > 0 &&
+    users.some((user) => user.id === currentUserId);
   const [likedPostIds, setLikedPostIds] = useState<string[]>([]);
   const isLiked = likedPostIds.includes(post.id);
   const likesCount = post.likesCount + (isLiked ? 1 : 0);
@@ -26,6 +43,29 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
     new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul' }).format(
       new Date(value)
     );
+
+  const submitComment = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!canSubmit) return;
+
+    setComments((previous) => [
+      ...previous,
+      {
+        id: crypto.randomUUID(),
+        authorId: currentUserId,
+        content: commentText.trim(),
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+    setCommentText('');
+    inputRef.current?.focus();
+  };
+
+  useEffect(() => {
+    if (comments.length > post.comments.length && commentListRef.current) {
+      commentListRef.current.scrollTop = commentListRef.current.scrollHeight;
+    }
+  }, [comments.length, post.comments.length]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -96,15 +136,36 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                 </svg>
               </button>
             </header>
-            <div className="min-h-0 flex-1 overflow-y-auto px-[16px]">
+            <div
+              ref={commentListRef}
+              className="min-h-0 flex-1 overflow-y-auto px-[16px]"
+            >
               <ul className="p-[16px] text-[14px] leading-[18px]">
-                <li>
-                  <Link href={profileUrl} className="font-medium text-white">
-                    {author.username}
-                  </Link>{' '}
-                  <span className="whitespace-pre-wrap">{post.content}</span>
+                <li className="flex items-start">
+                  <div className="w-[50px] shrink-0">
+                    <Link href={profileUrl}>
+                      <Avatar
+                        src={author.profileImage}
+                        alt={`${author.username} 프로필`}
+                        size={32}
+                      />
+                    </Link>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Link href={profileUrl} className="font-medium text-white">
+                      {author.username}
+                    </Link>{' '}
+                    <span className="whitespace-pre-wrap break-words">
+                      {post.content}
+                    </span>
+                    <div className="mt-[8px] mb-[4px] text-[12px] leading-[16px] text-[#a2aab4]">
+                      <time dateTime={post.createdAt}>
+                        {dateLabel(post.createdAt)}
+                      </time>
+                    </div>
+                  </div>
                 </li>
-                {post.comments.map((comment) => {
+                {comments.map((comment) => {
                   const commentAuthor = users.find(
                     (user) => user.id === comment.authorId
                   );
@@ -169,9 +230,20 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                   key={icon}
                   type="button"
                   aria-label={
-                    icon === 'like' && isLiked ? '좋아요 취소' : label
+                    icon === 'like' && isLiked
+                      ? '좋아요 취소'
+                      : icon === 'save' && isSaved
+                        ? '저장 취소'
+                        : label
                   }
-                  aria-pressed={icon === 'like' ? isLiked : undefined}
+                  aria-pressed={
+                    icon === 'like'
+                      ? isLiked
+                      : icon === 'save'
+                        ? isSaved
+                        : undefined
+                  }
+                  disabled={icon === 'save' && !isLoaded}
                   onClick={
                     icon === 'like'
                       ? () =>
@@ -180,7 +252,11 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                               ? ids.filter((id) => id !== post.id)
                               : [...ids, post.id]
                           )
-                      : undefined
+                      : icon === 'comment'
+                        ? () => inputRef.current?.focus()
+                        : icon === 'save'
+                          ? () => toggleSavedPost(post.id)
+                          : undefined
                   }
                   className={`h-[40px] w-[40px] shrink-0 cursor-pointer p-[8px] ${icon === 'save' ? 'ml-auto' : ''}`}
                 >
@@ -193,6 +269,16 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                       fill="#ff3040"
                     >
                       <path d="M16.792 1.904A6.04 6.04 0 0 0 12 4.031a6.052 6.052 0 0 0-4.792-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z" />
+                    </svg>
+                  ) : icon === 'save' && isSaved ? (
+                    <svg
+                      aria-hidden="true"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="#f8f9f9"
+                    >
+                      <polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21" />
                     </svg>
                   ) : (
                     <Image
@@ -214,7 +300,10 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
             >
               {dateLabel(post.createdAt)}
             </time>
-            <div className="flex shrink-0 items-center border-t border-[#2b3036] py-[6px] pr-[16px]">
+            <form
+              onSubmit={submitComment}
+              className="flex shrink-0 items-center border-t border-[#2b3036] py-[6px] pr-[16px]"
+            >
               <button
                 type="button"
                 aria-label="이모티콘"
@@ -228,19 +317,22 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                 />
               </button>
               <textarea
+                ref={inputRef}
+                value={commentText}
+                onChange={(event) => setCommentText(event.target.value)}
                 aria-label="댓글 달기..."
                 placeholder="댓글 달기..."
                 rows={1}
                 className="min-w-0 flex-1 resize-none bg-transparent p-0 text-[14px] leading-[18px]"
               />
               <button
-                type="button"
-                disabled
-                className="text-[14px] leading-[18px] font-medium text-[#b3dbff]"
+                type="submit"
+                disabled={!canSubmit}
+                className="cursor-pointer text-[14px] leading-[18px] font-medium text-[#b3dbff] disabled:cursor-default"
               >
                 게시
               </button>
-            </div>
+            </form>
           </div>
         </article>
       </div>
