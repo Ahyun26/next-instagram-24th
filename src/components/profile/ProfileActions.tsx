@@ -9,7 +9,7 @@ interface ProfileActionsProps {
 export default function ProfileActions({ isOwnProfile }: ProfileActionsProps) {
   const [isFollowing, setIsFollowing] = useState(false);
   const buttonClass =
-    'h-[44px] rounded-[12px] px-[20px] py-[13px] text-[14px] leading-[18px] font-semibold text-white';
+    'h-[44px] cursor-pointer rounded-[12px] px-[20px] py-[13px] text-[14px] leading-[18px] font-semibold text-white';
 
   return (
     <div className="mt-[12px] py-[12px]">
@@ -72,7 +72,7 @@ export default function ProfileActions({ isOwnProfile }: ProfileActionsProps) {
             <button
               type="button"
               aria-label="비슷한 계정"
-              className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[#25292e] p-[8px] text-[#f5f5f5]"
+              className="flex h-[44px] w-[44px] shrink-0 cursor-pointer items-center justify-center rounded-[12px] bg-[#25292e] p-[8px] text-[#f5f5f5]"
             >
               <svg
                 aria-hidden="true"

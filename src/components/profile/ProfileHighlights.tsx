@@ -10,7 +10,7 @@ export default function ProfileHighlights() {
         <button
           type="button"
           aria-label="새 하이라이트 만들기"
-          className="flex w-[85px] flex-col items-center text-[#f5f5f5]"
+          className="flex w-[85px] cursor-pointer flex-col items-center text-[#f5f5f5]"
         >
           <span className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[#25292e]">
             <Image

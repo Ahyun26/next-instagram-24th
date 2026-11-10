@@ -25,7 +25,7 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
               type="button"
               aria-label={tab.label}
               aria-pressed={isSelected}
-              className={`flex h-[44px] items-center justify-center border-b-2 px-[20px] ${
+              className={`flex h-[44px] cursor-pointer items-center justify-center border-b-2 px-[20px] ${
                 isSelected
                   ? 'border-[#f8f9f9] text-[#f5f5f5]'
                   : 'border-transparent text-[#8e8e8e]'
