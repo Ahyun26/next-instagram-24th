@@ -1,11 +1,16 @@
 import { notFound } from 'next/navigation';
 
 import ProfileHeader from '@/components/profile/ProfileHeader';
+import ProfileHighlights from '@/components/profile/ProfileHighlights';
 import { posts } from '@/data/posts';
 import { users } from '@/data/users';
 
 interface ProfilePageProps {
   params: Promise<{ username: string }>;
+}
+
+export function generateStaticParams() {
+  return users.map((user) => ({ username: user.username }));
 }
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
@@ -21,6 +26,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   return (
     <div className="pt-[30px]">
       <ProfileHeader user={user} postCount={userPosts.length} />
+      <ProfileHighlights />
     </div>
   );
 }
