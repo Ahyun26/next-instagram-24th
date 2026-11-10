@@ -31,16 +31,27 @@ export default function ProfileEmptyState({
   tab,
   isOwnProfile,
 }: ProfileEmptyStateProps) {
-  if (tab === 'reposts' || (!isOwnProfile && tab !== 'posts')) {
+  if (
+    (isOwnProfile && tab === 'reposts') ||
+    (!isOwnProfile && tab === 'saved')
+  ) {
     return null;
   }
 
   const state = isOwnProfile
-    ? ownStates[tab]
+    ? ownStates[tab as keyof typeof ownStates]
     : {
-        title: '게시물 없음',
+        title:
+          tab === 'reposts'
+            ? '리포스트 없음'
+            : tab === 'tagged'
+              ? '태그 없음'
+              : '게시물 없음',
         description: '',
-        icon: '/images/empty-posts.svg',
+        icon:
+          tab === 'tagged'
+            ? '/images/empty-tagged.svg'
+            : '/images/empty-posts.svg',
       };
 
   return (
