@@ -5,21 +5,34 @@ import { useState } from 'react';
 import PostGrid from '@/components/profile/PostGrid';
 import ProfileEmptyState from '@/components/profile/ProfileEmptyState';
 import ProfileTabs, { type ProfileTab } from '@/components/profile/ProfileTabs';
+import useSavedPosts from '@/hooks/useSavedPosts';
 import type { Post } from '@/types/post';
 
 interface ProfileContentProps {
   posts: Post[];
   username: string;
   isOwnProfile: boolean;
+  currentUserId: string;
+  allPosts: Post[];
+  authorUsernames: Record<string, string>;
 }
 
 export default function ProfileContent({
   posts,
   username,
   isOwnProfile,
+  currentUserId,
+  allPosts,
+  authorUsernames,
 }: ProfileContentProps) {
   const [selectedTab, setSelectedTab] = useState<ProfileTab>('posts');
-  const visiblePosts = selectedTab === 'posts' ? posts : [];
+  const { savedPostIds, isLoaded } = useSavedPosts(currentUserId);
+  const visiblePosts =
+    selectedTab === 'posts'
+      ? posts
+      : selectedTab === 'saved' && isOwnProfile
+        ? allPosts.filter((post) => savedPostIds.includes(post.id))
+        : [];
 
   return (
     <>
@@ -41,8 +54,12 @@ export default function ProfileContent({
           </button>
         </div>
       )}
-      {visiblePosts.length > 0 ? (
-        <PostGrid posts={visiblePosts} username={username} />
+      {selectedTab === 'saved' && !isLoaded ? null : visiblePosts.length > 0 ? (
+        <PostGrid
+          posts={visiblePosts}
+          username={username}
+          authorUsernames={authorUsernames}
+        />
       ) : (
         <ProfileEmptyState tab={selectedTab} isOwnProfile={isOwnProfile} />
       )}

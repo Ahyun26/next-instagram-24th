@@ -38,6 +38,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         posts={userPosts}
         username={user.username}
         isOwnProfile={isOwnProfile}
+        currentUserId={currentUserId}
+        allPosts={isOwnProfile ? posts : []}
+        authorUsernames={Object.fromEntries(
+          users.map((item) => [item.id, item.username])
+        )}
       />
     </div>
   );
