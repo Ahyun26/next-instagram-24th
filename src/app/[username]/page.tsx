@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileHighlights from '@/components/profile/ProfileHighlights';
+import ProfileTabs from '@/components/profile/ProfileTabs';
 import { posts } from '@/data/posts';
 import { users } from '@/data/users';
 
@@ -27,6 +28,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     <div className="pt-[30px]">
       <ProfileHeader user={user} postCount={userPosts.length} />
       <ProfileHighlights />
+      <ProfileTabs />
     </div>
   );
 }
