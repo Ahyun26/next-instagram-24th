@@ -34,7 +34,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         isOwnProfile={isOwnProfile}
       />
       {isOwnProfile && <ProfileHighlights />}
-      <ProfileTabs />
+      <ProfileTabs isOwnProfile={isOwnProfile} />
       <PostGrid posts={userPosts} username={user.username} />
     </div>
   );
