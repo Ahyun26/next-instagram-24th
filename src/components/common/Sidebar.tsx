@@ -23,7 +23,7 @@ function ProfileImage({ src, active }: { src: string; active?: boolean }) {
       alt=""
       width={24}
       height={24}
-      className={`size-6 rounded-full object-cover ${
+      className={`block size-6 rounded-full object-cover ${
         active ? 'ring-2 ring-ig-primary-text' : ''
       }`}
     />
@@ -46,9 +46,15 @@ export default function Sidebar() {
   const me = users.find((user) => user.id === currentUserId);
 
   return (
-    <nav className="fixed top-0 left-0 z-10 flex h-dvh w-18 flex-col items-center px-3 py-5">
+    <nav className="group fixed top-0 left-0 z-10 flex h-dvh w-18 flex-col overflow-hidden bg-ig-primary-background px-3 py-6 transition-[width] duration-200 ease-out hover:w-[238px] focus-within:w-[238px]">
       {/* 로고 */}
-      <SidebarItem href="/" label="Instagram" icon={<InstagramIcon />} />
+      <SidebarItem
+        href="/"
+        label="Instagram"
+        icon={<InstagramIcon />}
+        hideLabel
+        fitContent
+      />
 
       {/* 메인 메뉴 */}
       <div className="flex flex-1 flex-col justify-center">
@@ -57,6 +63,7 @@ export default function Sidebar() {
           label="홈"
           icon={<HomeIcon />}
           activeIcon={<HomeIcon filled />}
+          fitContent
         />
         <SidebarItem label="릴스" icon={<ReelsIcon />} />
         <SidebarItem label="메시지" icon={<MessageIcon />} />
