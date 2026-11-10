@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 
+import PostGrid from '@/components/profile/PostGrid';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileHighlights from '@/components/profile/ProfileHighlights';
 import ProfileTabs from '@/components/profile/ProfileTabs';
@@ -25,10 +26,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const userPosts = posts.filter((post) => post.authorId === user.id);
 
   return (
-    <div className="pt-[30px]">
+    <div className="box-content mx-auto w-[74%] max-w-[1457px] px-[20px] pt-[30px]">
       <ProfileHeader user={user} postCount={userPosts.length} />
       <ProfileHighlights />
       <ProfileTabs />
+      <PostGrid posts={userPosts} username={user.username} />
     </div>
   );
 }
