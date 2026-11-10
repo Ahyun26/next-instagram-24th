@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Avatar from '@/components/common/Avatar';
 import type { Post } from '@/types/post';
@@ -17,6 +17,9 @@ interface PostDetailProps {
 
 export default function PostDetail({ post, author, users }: PostDetailProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [likedPostIds, setLikedPostIds] = useState<string[]>([]);
+  const isLiked = likedPostIds.includes(post.id);
+  const likesCount = post.likesCount + (isLiked ? 1 : 0);
   const router = useRouter();
   const profileUrl = `/${author.username}`;
   const dateLabel = (value: string) =>
@@ -165,20 +168,45 @@ export default function PostDetail({ post, author, users }: PostDetailProps) {
                 <button
                   key={icon}
                   type="button"
-                  aria-label={label}
+                  aria-label={
+                    icon === 'like' && isLiked ? '좋아요 취소' : label
+                  }
+                  aria-pressed={icon === 'like' ? isLiked : undefined}
+                  onClick={
+                    icon === 'like'
+                      ? () =>
+                          setLikedPostIds((ids) =>
+                            ids.includes(post.id)
+                              ? ids.filter((id) => id !== post.id)
+                              : [...ids, post.id]
+                          )
+                      : undefined
+                  }
                   className={`h-[40px] w-[40px] shrink-0 cursor-pointer p-[8px] ${icon === 'save' ? 'ml-auto' : ''}`}
                 >
-                  <Image
-                    src={`/images/post-icons/${icon}.svg`}
-                    alt=""
-                    width={24}
-                    height={24}
-                  />
+                  {icon === 'like' && isLiked ? (
+                    <svg
+                      aria-hidden="true"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="#ff3040"
+                    >
+                      <path d="M16.792 1.904A6.04 6.04 0 0 0 12 4.031a6.052 6.052 0 0 0-4.792-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z" />
+                    </svg>
+                  ) : (
+                    <Image
+                      src={`/images/post-icons/${icon}.svg`}
+                      alt=""
+                      width={24}
+                      height={24}
+                    />
+                  )}
                 </button>
               ))}
             </div>
             <p className="mb-[4px] shrink-0 px-[16px] text-[14px] leading-[18px] font-semibold">
-              좋아요 {post.likesCount.toLocaleString('ko-KR')}개
+              좋아요 {likesCount.toLocaleString('ko-KR')}개
             </p>
             <time
               dateTime={post.createdAt}

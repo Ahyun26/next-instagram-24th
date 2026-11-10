@@ -29,7 +29,7 @@ export const posts: Post[] = [
   {
     id: 'post-3',
     authorId: 'user-2',
-    imageUrl: '/images/post-3.jpg',
+    imageUrl: '/images/post-3-lemon.jpg',
     content: '주말 기록',
     createdAt: '2026-11-07T12:00:00+09:00',
     likesCount: 32,
