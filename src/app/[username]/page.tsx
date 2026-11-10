@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
 
-import PostGrid from '@/components/profile/PostGrid';
+import ProfileContent from '@/components/profile/ProfileContent';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileHighlights from '@/components/profile/ProfileHighlights';
-import ProfileTabs from '@/components/profile/ProfileTabs';
 import { posts } from '@/data/posts';
 import { currentUserId, users } from '@/data/users';
 
@@ -34,8 +33,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         isOwnProfile={isOwnProfile}
       />
       {isOwnProfile && <ProfileHighlights />}
-      <ProfileTabs isOwnProfile={isOwnProfile} />
-      <PostGrid posts={userPosts} username={user.username} />
+      <ProfileContent
+        key={user.id}
+        posts={userPosts}
+        username={user.username}
+        isOwnProfile={isOwnProfile}
+      />
     </div>
   );
 }

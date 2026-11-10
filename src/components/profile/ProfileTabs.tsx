@@ -1,9 +1,17 @@
+export type ProfileTab = 'posts' | 'saved' | 'reposts' | 'tagged';
+
 interface ProfileTabsProps {
   isOwnProfile: boolean;
+  selectedTab: ProfileTab;
+  onTabChange: (tab: ProfileTab) => void;
 }
 
-export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
-  const tabs = [
+export default function ProfileTabs({
+  isOwnProfile,
+  selectedTab,
+  onTabChange,
+}: ProfileTabsProps) {
+  const tabs: { id: ProfileTab; label: string }[] = [
     { id: 'posts', label: '게시물' },
     isOwnProfile
       ? { id: 'saved', label: '저장됨' }
@@ -14,7 +22,7 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
   return (
     <div className="flex h-[44px] justify-center gap-x-[4px] border-b-[0.5px] border-[#2b3036]">
       {tabs.map((tab) => {
-        const isSelected = tab.id === 'posts';
+        const isSelected = tab.id === selectedTab;
 
         return (
           <div
@@ -25,6 +33,7 @@ export default function ProfileTabs({ isOwnProfile }: ProfileTabsProps) {
               type="button"
               aria-label={tab.label}
               aria-pressed={isSelected}
+              onClick={() => onTabChange(tab.id)}
               className={`flex h-[44px] cursor-pointer items-center justify-center border-b-2 px-[20px] ${
                 isSelected
                   ? 'border-[#f8f9f9] text-[#f5f5f5]'
