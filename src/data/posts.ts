@@ -4,7 +4,7 @@ export const posts: Post[] = [
   {
     id: 'post-1',
     authorId: 'user-1',
-    imageUrl: '/images/post-1.jpg',
+    imageUrl: '/images/post-1-pororo.jpg',
     content: '산책하기 좋은 날 🌿',
     createdAt: '2026-11-09T10:00:00+09:00',
     likesCount: 24,
