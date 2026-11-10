@@ -16,7 +16,7 @@ export const users: User[] = [
     id: 'user-2',
     username: 'junggyu',
     name: '정규',
-    profileImage: '/images/avatar-junggyu.jpg',
+    profileImage: '/images/avatar-jeonggyu.jpg',
     bio: '반가워요!',
     followersCount: 150,
     followingCount: 110,
