@@ -10,7 +10,7 @@ export default function ProfileHeader({ user, postCount }: ProfileHeaderProps) {
   return (
     <header className="mx-auto mb-[16px] w-full max-w-[680px] text-[#f5f5f5]">
       <div className="flex items-center">
-        <div className="mr-[28px] shrink-0">
+        <div className="mr-[28px] shrink-0 pt-[31px]">
           <Avatar
             src={user.profileImage}
             alt={`${user.username} 프로필`}
@@ -51,20 +51,22 @@ export default function ProfileHeader({ user, postCount }: ProfileHeaderProps) {
         </div>
       </div>
 
-      <div className="mt-[12px] flex items-center gap-x-[8px]">
-        <button
-          type="button"
-          className="flex h-[44px] min-w-0 flex-1 items-center justify-center rounded-[12px] bg-[#25292e] px-[20px] text-[14px] leading-[18px] font-semibold text-white"
-        >
-          프로필 편집
-        </button>
+      <div className="mt-[12px] py-[12px]">
+        <div className="flex items-center gap-x-[8px]">
+          <button
+            type="button"
+            className="flex h-[44px] min-w-0 flex-1 items-center justify-center rounded-[12px] bg-[#25292e] px-[20px] text-[14px] leading-[18px] font-semibold text-white"
+          >
+            프로필 편집
+          </button>
 
-        <button
-          type="button"
-          className="flex h-[44px] min-w-0 flex-1 items-center justify-center rounded-[12px] bg-[#25292e] px-[20px] text-[14px] leading-[18px] font-semibold text-white"
-        >
-          보관함 보기
-        </button>
+          <button
+            type="button"
+            className="flex h-[44px] min-w-0 flex-1 items-center justify-center rounded-[12px] bg-[#25292e] px-[20px] text-[14px] leading-[18px] font-semibold text-white"
+          >
+            보관함 보기
+          </button>
+        </div>
       </div>
     </header>
   );
