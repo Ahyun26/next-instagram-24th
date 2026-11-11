@@ -6,6 +6,8 @@ import formatRelativeTime from '@/lib/formatRelativeTime';
 import type { Post } from '@/types/post';
 import type { User } from '@/types/user';
 
+import FeedFollowButton from './FeedFollowButton';
+
 interface FeedPostHeaderProps {
   post: Post;
   author: User;
@@ -45,12 +47,7 @@ export default function FeedPostHeader({ post, author }: FeedPostHeaderProps) {
         <p className="text-xs leading-4">회원님을 위한 추천</p>
       </div>
 
-      <button
-        type="button"
-        className="h-8 shrink-0 cursor-pointer rounded-lg bg-ig-secondary-button-background px-4 text-sm font-semibold"
-      >
-        팔로우
-      </button>
+      <FeedFollowButton userId={author.id} />
       <button
         type="button"
         aria-label="옵션 더 보기"

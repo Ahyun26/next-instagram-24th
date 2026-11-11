@@ -1,13 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { currentUserId } from '@/data/users';
+import useFollowing from '@/hooks/useFollowing';
 
 interface ProfileActionsProps {
+  userId: string;
   isOwnProfile: boolean;
 }
 
-export default function ProfileActions({ isOwnProfile }: ProfileActionsProps) {
-  const [isFollowing, setIsFollowing] = useState(false);
+export default function ProfileActions({
+  userId,
+  isOwnProfile,
+}: ProfileActionsProps) {
+  const following = useFollowing(currentUserId);
+  const isFollowing = following.isFollowing(userId);
   const buttonClass =
     'h-[44px] cursor-pointer rounded-[12px] px-[20px] py-[13px] text-[14px] leading-[18px] font-semibold text-white';
 
@@ -35,7 +41,7 @@ export default function ProfileActions({ isOwnProfile }: ProfileActionsProps) {
               <button
                 type="button"
                 aria-pressed={isFollowing}
-                onClick={() => setIsFollowing((following) => !following)}
+                onClick={() => following.toggleFollow(userId)}
                 className={`${buttonClass} w-full ${isFollowing ? 'bg-[#25292e]' : 'bg-[#4a5df9]'}`}
               >
                 {isFollowing ? (

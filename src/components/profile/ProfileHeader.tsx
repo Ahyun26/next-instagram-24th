@@ -1,5 +1,6 @@
 import Avatar from '@/components/common/Avatar';
 import ProfileActions from '@/components/profile/ProfileActions';
+import ProfileFollowStats from '@/components/profile/ProfileFollowStats';
 import type { User } from '@/types/user';
 
 interface ProfileHeaderProps {
@@ -40,14 +41,7 @@ export default function ProfileHeader({
               <li>
                 게시물 <span className="font-semibold">{postCount}</span>
               </li>
-              <li>
-                팔로워{' '}
-                <span className="font-semibold">{user.followersCount}</span>
-              </li>
-              <li>
-                팔로우{' '}
-                <span className="font-semibold">{user.followingCount}</span>
-              </li>
+              <ProfileFollowStats user={user} isOwnProfile={isOwnProfile} />
             </ul>
           </div>
 
@@ -59,7 +53,11 @@ export default function ProfileHeader({
         </div>
       </div>
 
-      <ProfileActions key={user.id} isOwnProfile={isOwnProfile} />
+      <ProfileActions
+        key={user.id}
+        userId={user.id}
+        isOwnProfile={isOwnProfile}
+      />
     </header>
   );
 }
