@@ -35,4 +35,22 @@ export const posts: Post[] = [
     likesCount: 32,
     comments: [],
   },
+  {
+    id: 'post-4',
+    authorId: 'user-2',
+    imageUrl: '/images/cat.jpeg',
+    content: '오늘의 고양이 🐱',
+    createdAt: '2026-11-10T18:30:00+09:00',
+    likesCount: 57,
+    comments: [],
+  },
+  {
+    id: 'post-5',
+    authorId: 'user-2',
+    imageUrl: '/images/postmalone.jpeg',
+    content: 'Post Malone 🎤',
+    createdAt: '2026-11-11T09:00:00+09:00',
+    likesCount: 1204,
+    comments: [],
+  },
 ];
