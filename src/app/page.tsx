@@ -1,7 +1,13 @@
+import { Suspense } from 'react';
+
+import Feed from '@/components/feed/Feed';
+
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-center text-3xl font-bold underline">메인 페이지</h1>
-    </div>
+    <section className="mx-auto w-full max-w-[468px] py-6">
+      <Suspense>
+        <Feed />
+      </Suspense>
+    </section>
   );
 }
