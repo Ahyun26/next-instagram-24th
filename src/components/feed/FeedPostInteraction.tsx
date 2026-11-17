@@ -3,6 +3,8 @@
 import { useCallback, useState } from 'react';
 
 import PostLikeEffect from '@/components/post/PostLikeEffect';
+import { currentUserId } from '@/data/users';
+import useLikedPosts from '@/hooks/useLikedPosts';
 import type { Post } from '@/types/post';
 
 import FeedPostActions from './FeedPostActions';
@@ -17,7 +19,8 @@ export default function FeedPostInteraction({
   post,
   username,
 }: FeedPostInteractionProps) {
-  const [isLiked, setIsLiked] = useState(false);
+  const { likedPostIds, toggleLikedPost } = useLikedPosts(currentUserId);
+  const isLiked = likedPostIds.includes(post.id);
   const [likeEffectKey, setLikeEffectKey] = useState(0);
   const clearLikeEffect = useCallback(() => setLikeEffectKey(0), []);
 
@@ -27,9 +30,9 @@ export default function FeedPostInteraction({
         src={post.imageUrl}
         alt={`${username}님의 게시물 사진`}
         onDoubleClick={() => {
-          setIsLiked((liked) => !liked);
-          if (isLiked) clearLikeEffect();
-          else setLikeEffectKey((key) => key + 1);
+          const nextLiked = toggleLikedPost(post.id);
+          if (nextLiked) setLikeEffectKey((key) => key + 1);
+          else clearLikeEffect();
         }}
       >
         {likeEffectKey > 0 && (
@@ -41,7 +44,7 @@ export default function FeedPostInteraction({
         commentsCount={post.comments.length}
         isLiked={isLiked}
         onToggleLike={() => {
-          setIsLiked((liked) => !liked);
+          toggleLikedPost(post.id);
           clearLikeEffect();
         }}
       />
