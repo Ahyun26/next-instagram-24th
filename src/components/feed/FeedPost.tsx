@@ -1,10 +1,9 @@
 import type { Post } from '@/types/post';
 import type { User } from '@/types/user';
 
-import FeedPostActions from './FeedPostActions';
 import FeedPostCaption from './FeedPostCaption';
 import FeedPostHeader from './FeedPostHeader';
-import FeedPostImage from './FeedPostImage';
+import FeedPostInteraction from './FeedPostInteraction';
 
 interface FeedPostProps {
   post: Post;
@@ -16,14 +15,7 @@ export default function FeedPost({ post, author }: FeedPostProps) {
   return (
     <article className="pb-4">
       <FeedPostHeader post={post} author={author} />
-      <FeedPostImage
-        src={post.imageUrl}
-        alt={`${author.username}님의 게시물 사진`}
-      />
-      <FeedPostActions
-        likesCount={post.likesCount}
-        commentsCount={post.comments.length}
-      />
+      <FeedPostInteraction post={post} username={author.username} />
       <FeedPostCaption username={author.username} content={post.content} />
     </article>
   );
