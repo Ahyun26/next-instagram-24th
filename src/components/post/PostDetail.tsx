@@ -3,12 +3,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import Avatar from '@/components/common/Avatar';
+import useLikedPosts from '@/hooks/useLikedPosts';
 import useSavedPosts from '@/hooks/useSavedPosts';
 import type { Post } from '@/types/post';
 import type { User } from '@/types/user';
+
+import PostLikeEffect from './PostLikeEffect';
 
 interface PostDetailProps {
   post: Post;
@@ -34,9 +43,12 @@ export default function PostDetail({
   const canSubmit =
     commentText.trim().length > 0 &&
     users.some((user) => user.id === currentUserId);
-  const [likedPostIds, setLikedPostIds] = useState<string[]>([]);
+  const { likedPostIds, toggleLikedPost } = useLikedPosts(currentUserId);
+  const [likeEffectKey, setLikeEffectKey] = useState(0);
   const isLiked = likedPostIds.includes(post.id);
   const likesCount = post.likesCount + (isLiked ? 1 : 0);
+  const clearLikeEffect = useCallback(() => setLikeEffectKey(0), []);
+  const toggleLike = () => toggleLikedPost(post.id);
   const router = useRouter();
   const profileUrl = `/${author.username}`;
   const dateLabel = (value: string) =>
@@ -90,7 +102,14 @@ export default function PostDetail({
     >
       <div className="flex h-full items-center justify-center">
         <article className="mx-[64px] flex max-h-[calc(100dvh-40px)] max-w-[calc(100%-128px)] justify-center overflow-hidden">
-          <div className="relative aspect-[3/4] h-[calc(100dvh-40px)] max-w-full shrink-0 overflow-hidden rounded-l-[16px] bg-black">
+          <div
+            onDoubleClick={() => {
+              const nextLiked = toggleLike();
+              if (nextLiked) setLikeEffectKey((key) => key + 1);
+              else clearLikeEffect();
+            }}
+            className="relative aspect-[3/4] h-[calc(100dvh-40px)] max-w-full shrink-0 overflow-hidden rounded-l-[16px] bg-black"
+          >
             <Image
               src={post.imageUrl}
               alt={post.content}
@@ -98,6 +117,12 @@ export default function PostDetail({
               sizes="75vh"
               className="object-contain"
             />
+            {likeEffectKey > 0 && (
+              <PostLikeEffect
+                key={likeEffectKey}
+                onComplete={clearLikeEffect}
+              />
+            )}
           </div>
           <div className="flex w-[500px] max-w-[500px] min-w-0 flex-col overflow-hidden rounded-r-[16px] bg-[#0c1014]">
             <header className="flex shrink-0 items-center">
@@ -246,12 +271,10 @@ export default function PostDetail({
                   disabled={icon === 'save' && !isLoaded}
                   onClick={
                     icon === 'like'
-                      ? () =>
-                          setLikedPostIds((ids) =>
-                            ids.includes(post.id)
-                              ? ids.filter((id) => id !== post.id)
-                              : [...ids, post.id]
-                          )
+                      ? () => {
+                          toggleLike();
+                          clearLikeEffect();
+                        }
                       : icon === 'comment'
                         ? () => inputRef.current?.focus()
                         : icon === 'save'
